@@ -11,6 +11,8 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Exception\SuspiciousOperationException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Illuminate\Database\QueryException;
 
 class Handler extends ExceptionHandler
 {
@@ -56,22 +58,44 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $e)
     {
-      if($exception instanceof ValidationException) {
-        return $this->convertValidationExceptionToResponse($exception, $request);
+      if($e instanceof ValidationException) {
+        return $this->convertValidationExceptionToResponse($e, $request);
       }
-      elseif($exception instanceof ModelNotFoundException){
-        $name = class_basename($exception->getModel());   //class_basename zeby nie bylo namespace w nazwie (App\User)
+      elseif($e instanceof ModelNotFoundException){
+        $name = class_basename($e->getModel());   //class_basename zeby nie bylo namespace w nazwie (App\User)
         return $this->errorResponse("{$name} does not exist", 404);
       }
-      elseif($exception instanceof AuthenticationException) {
-        return $this->unauthenticated($request, $exception);
+      elseif($e instanceof AuthenticationException) {
+        return $this->unauthenticated($request, $e);
       }
-      elseif ($exception instanceof AuthorizationException) {
-        return $this->errorResponse($exception->getMessage(), 403)
+      elseif ($e instanceof AuthorizationException) {
+        return $this->errorResponse($e->getMessage(), 403);
       }
-        return parent::render($request, $exception);
+      elseif ($e instanceof SuspiciousOperationException || $e instanceof NotFoundHttpException) {
+        return $this->errorResponse('Invalid Url', 404);
+      }
+      elseif ($e instanceof MethodNotAllowedException) {
+        return $this->errorResponse('Method not allowed', 405);
+      }
+      elseif ($this->isHttpException($e)) {
+        return $this->errorResponse($e->getMessage(), $e->getStatusCode());
+      }
+      elseif($e instanceof QueryException) {
+        $code = $e->errorInfo[1];
+        if($code == 1451) { //delete resource error
+          return $this->errorResponse('Cannot remove this resource', 409);
+        }
+        return $this->errorResponse('Database error', 500);
+      }
+
+
+      if (info('app.debug')) {
+        return $this->errorResponse('Internal server error', 500);
+      }
+
+      return parent::render($request, $e);
     }
 
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)

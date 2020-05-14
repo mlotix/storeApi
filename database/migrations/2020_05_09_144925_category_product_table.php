@@ -18,7 +18,6 @@ class CategoryProductTable extends Migration
             $table->foreignId('category_id')->constraiend;
             $table->foreignId('product_id')->constraiend;
             $table->timestamps();
-
         });
     }
 

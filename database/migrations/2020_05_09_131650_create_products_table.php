@@ -17,11 +17,13 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->float('price', 6, 2);
             $table->unsignedInteger('quantity');
             $table->string('status')->default(Product::UNAVAILABLE_PRODUCT);
             $table->string('image');
             $table->foreignId('seller_id')->constrained('users'); //dodac on delete
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

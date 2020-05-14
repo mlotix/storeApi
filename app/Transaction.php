@@ -5,10 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Product;
 use App\Buyer;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Transaction extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
       'quantity',
       'buyer_id',
@@ -16,10 +19,10 @@ class Transaction extends Model
     ];
 
     public function buyer() {
-      $this->belongsTo(Buyer::class);
+      return $this->belongsTo(Buyer::class);
     }
 
     public function product() {
-      $this->belongsTo(Product::class);
+      return $this->belongsTo(Product::class);
     }
 }

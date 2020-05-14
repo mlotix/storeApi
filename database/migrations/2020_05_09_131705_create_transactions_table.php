@@ -16,11 +16,12 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('quantity');
+            $table->float('amount', 8, 2);
             $table->foreignId('buyer_id')->constrained('users');
             $table->foreignId('product_id')->constrained();
             $table->timestamps();
-
-        });
+            $table->softDeletes();
+      });
     }
 
     /**
