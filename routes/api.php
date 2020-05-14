@@ -28,6 +28,11 @@ Route::resource('products.buyers', 'Product\ProductBuyerController', ['only' => 
 //Products categories
 Route::resource('products.categories', 'Product\ProductCategoryController', ['except' => ['edit', 'create', 'store']]);
 
+//Basket
+Route::resource('basketitems', 'Basketitem\BasketitemController', ['only' => ['index', 'show']]);
+// Basket Categories
+Route::resource('basketitems.categories', 'Basketitem\BasketitemCategoryController', ['only' => ['index']]);
+
 //Sellers
 Route::resource('sellers', 'Seller\SellerController', ['only' => ['index', 'show']]);
 
