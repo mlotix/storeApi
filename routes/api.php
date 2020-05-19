@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 */
 //Buyers
 Route::resource('buyers', 'Buyer\BuyerController', ['only' => ['index', 'show']]);
+//Buyers transactions
+Route::resource('buyers.transactions', 'Buyer\BuyerTransactionController', ['only' => ['index']]);
+//Buyers Basket
+Route::resource('buyers.basketitems', 'Buyer\BuyerBasketitemController', ['except' => ['create', 'edit']]);
 
 //Categories
 Route::resource('categories', 'Category\CategoryController', ['except' => ['create', 'edit']]);

@@ -13,7 +13,7 @@ class Basketitem extends Model
       'buyer_id',
       'product_id',
     ];
-    
+
     public function buyer() {
       return $this->belongsTo(Buyer::class);
     }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Category;
 use App\Seller;
 use App\Transaction;
+use App\Basketitem;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -37,5 +38,8 @@ class Product extends Model
     }
     public function transactions() {
       return $this->hasMany(Transaction::class);
+    }
+    public function basketitems() {
+      return $this->hasMany(Basketitem::class);
     }
 }
