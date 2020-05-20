@@ -16,7 +16,7 @@ class CreateBasketitemsTable extends Migration
         Schema::create('basketitems', function (Blueprint $table) {
             $table->id();
             $table->foreignId('buyer_id')->constrained('users');
-            $table->foreignId('product_id')->constrained;
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->unsignedInteger('quantity');
             $table->timestamps();
         });

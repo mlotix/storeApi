@@ -48,7 +48,7 @@ class BuyerBasketitemController extends ApiController
       $basketitem = ['product_id' => $data['product_id'], 'quantity' => $data['quantity'], 'buyer_id' => $buyer_id];
       $basketitem = Basketitem::create($basketitem);
 
-      return $this->showOne($basketitem);
+      return $this->showOne($basketitem, 201);
     }
 
     /**

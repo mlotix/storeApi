@@ -19,9 +19,13 @@ Route::resource('buyers', 'Buyer\BuyerController', ['only' => ['index', 'show']]
 Route::resource('buyers.transactions', 'Buyer\BuyerTransactionController', ['only' => ['index']]);
 //Buyers Basket
 Route::resource('buyers.basketitems', 'Buyer\BuyerBasketitemController', ['except' => ['create', 'edit']]);
+//Buyers Basket Transactions
+Route::resource('buyers.basketitems.transactions', 'Buyer\BuyerBasketitemTransactionController', ['only' => ['store']]);
 
 //Categories
 Route::resource('categories', 'Category\CategoryController', ['except' => ['create', 'edit']]);
+//Categories Products
+Route::resource('categories.products', 'Category\CategoryProductController', ['only' => ['index']]);
 
 //Products
 Route::resource('products', 'Product\ProductController', ['only' => ['index', 'show']]);
@@ -31,6 +35,8 @@ Route::resource('products.transactions', 'Product\ProductTransactionController',
 Route::resource('products.buyers', 'Product\ProductBuyerController', ['only' => ['index']]);
 //Products categories
 Route::resource('products.categories', 'Product\ProductCategoryController', ['except' => ['edit', 'create', 'store']]);
+//Products Basket
+Route::resource('products.basketitems', 'Product\ProductBasketitemController', ['only' => ['index']]);
 
 //Basket
 Route::resource('basketitems', 'Basketitem\BasketitemController', ['only' => ['index', 'show']]);
@@ -39,6 +45,10 @@ Route::resource('basketitems.categories', 'Basketitem\BasketitemCategoryControll
 
 //Sellers
 Route::resource('sellers', 'Seller\SellerController', ['only' => ['index', 'show']]);
+//Sellers Products
+Route::resource('sellers.products', 'Seller\SellerProductController', ['except' => ['create', 'edit']]);
+//Sellers Transactions
+Route::resource('sellers.transactions', 'Seller\SellerTransactionController', ['only' => ['index']]);
 
 //transactions
 Route::resource('transactions', 'Transaction\TransactionController', ['only' => ['index', 'show']]);

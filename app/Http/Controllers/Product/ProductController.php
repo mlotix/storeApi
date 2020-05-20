@@ -28,6 +28,7 @@ class ProductController extends ApiController
      */
     public function show(Product $product)
     {
+      $product = Product::with('seller:id,name')->findOrFail($product->id);
       return $this->showOne($product);
     }
 
