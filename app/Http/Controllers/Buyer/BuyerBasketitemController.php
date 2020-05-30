@@ -17,7 +17,7 @@ class BuyerBasketitemController extends ApiController
      */
     public function index(Buyer $buyer)
     {
-        $basket = $buyer->basketitems()->with('product')->get();
+        $basket = $buyer->basketitems;
 
         return $this->showAll($basket);
     }

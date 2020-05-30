@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Buyer;
 use App\Product;
+use App\Transformers\BasketitemTransformer;
 
 class Basketitem extends Model
 {
@@ -14,6 +15,8 @@ class Basketitem extends Model
       'product_id',
     ];
 
+    public $transformer = BasketitemTransformer::class;
+    
     public function buyer() {
       return $this->belongsTo(Buyer::class);
     }

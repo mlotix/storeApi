@@ -11,6 +11,7 @@ class BasketitemsSeeder extends Seeder
      */
     public function run()
     {
+      Basketitem::flushEventListeners();
       factory(Basketitem::class, 200)->create();
     }
 }

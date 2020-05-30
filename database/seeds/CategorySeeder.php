@@ -11,6 +11,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
+        Category::flushEventListeners();
         factory(Category::class, 20)->create();
     }
 }

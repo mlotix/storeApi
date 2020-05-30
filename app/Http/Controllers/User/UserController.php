@@ -5,7 +5,10 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\User;
+use App\Mail\UserCreated;
+use App\Mail\UserEmailUpdated;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends ApiController
 {
@@ -83,6 +86,7 @@ class UserController extends ApiController
           $user->verified = User::UNVERIFIED_USER;
           $user->verification_token = User::generateVerificationToken();
           $user->email = $request->email;
+          $user->$user_email_verified_at = null;
         }
         if($request->filled('password')) {
           $user->password = Hash::make($request->password);
@@ -108,4 +112,49 @@ class UserController extends ApiController
 
         return $this->showOne($user);
     }
+
+    /**
+     * Verify the user.
+     *
+     * @param  string token
+     * @return \Illuminate\Http\Response
+     */
+     public function verify($token) {
+       $user = User::where('verification_token', '=', $token)->firstOrFail();
+
+       $user->verified = User::VERIFIED_USER;
+       $user->verification_token = null;
+       $user_email_verified_at = now();
+
+       $user->save();
+       return $this->showMsg('User has been verified');
+     }
+
+     public function resend_verify($email) {
+       $user = User::where('email', '=', $email)->firstOrFail();
+
+       if($user->verified = User::VERIFIED_USER) {
+         return $this->errorResponse('This user is already verified', 409);
+       }
+
+       retry(4, function() use ($user) {
+         Mail::to($user)->send(new UserCreated($user));
+       }, 250);
+
+       return $this->showMsg('The email has been resend. Check your inbox');
+     }
+
+     public function resend_update($email) {
+       $user = User::where('email', '=', $email)->firstOrFail();
+
+       if($user->verified = User::VERIFIED_USER) {
+         return $this->errorResponse('This user is already verified', 409);
+       }
+
+       retry(4, function() use ($user) {
+         Mail::to($user)->send(new UserEmailUpdated($user));
+       }, 250);
+
+       return $this->showMsg('The email has been resend. Check your inbox');
+     }
 }

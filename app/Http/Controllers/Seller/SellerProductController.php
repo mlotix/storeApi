@@ -5,6 +5,7 @@ use App\Http\Controllers\ApiController;
 use App\Seller;
 use App\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class SellerProductController extends ApiController
@@ -34,7 +35,7 @@ class SellerProductController extends ApiController
         'description' => 'min:3|string',
         'price' => 'numeric|gt:0|lt:100000|required',
         'quantity' => 'required|integer|gt:-1|lt:100000',
-        'image' => 'required|string|min:3',
+        'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'categories' => 'required|array',
         'categories.*' => 'integer|gt:0',
       ];
@@ -46,7 +47,7 @@ class SellerProductController extends ApiController
         'price' => $data['price'],
         'quantity' => $data['quantity'],
         'status' => $data['quantity'] == 0 ? Product::UNAVAILABLE_PRODUCT : Product::AVAILABLE_PRODUCT,
-        'image' => $data['image'],
+        'image' => $data['image']->store(''),
         'seller_id' => $seller->id,
       ];
 
@@ -85,7 +86,7 @@ class SellerProductController extends ApiController
         'description' => 'min:3|string',
         'price' => 'numeric|gt:0|lt:100000',
         'quantity' => 'integer|gt:-1|lt:100000',
-        'image' => 'string|min:3',
+        'image' => 'image|mimes:jpg,jpeg,png|max:2048',
         'categories' => 'array',
         'categories.*' => 'integer|gt:0',
       ];
@@ -103,8 +104,9 @@ class SellerProductController extends ApiController
       if($request->filled('quantity')) {
         $product->quantity = $request->quantity;
       }
-      if($request->filled('image')) {
-        $product->image = $request->image;
+      if($request->hasFile('image')) {
+        Storage::delete($product->image);
+        $product->image = $request->image->store('');
       }
       if($request->filled('categories')) {
         $product->categories()->sync($request->categories);
@@ -130,7 +132,7 @@ class SellerProductController extends ApiController
         if($product->seller_id != $seller->id) {
           return $this->errorResponse('This product does not belong to you', 401);
         }
-
+        Storage::delete($product->image);
         $product->delete();
 
         DB::table('basketitems')->where('product_id', $product->id)->delete();
