@@ -10,25 +10,12 @@ use Illuminate\Http\Request;
 
 class BuyerbasketitemTransactionController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+  public function __construct()
+  {
+    Parent::__construct();
+    $this->middleware('scope:purchase-product')->only(['store']);
+    $this->middleware('can:purchase,buyer')->only('store');
+  }
 
     /**
      * Store a newly created resource in storage.
@@ -73,48 +60,4 @@ class BuyerbasketitemTransactionController extends ApiController
         return $this->showOne($transaction, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Buyer  $buyer
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Buyer $buyer)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Buyer  $buyer
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Buyer $buyer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Buyer  $buyer
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Buyer $buyer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Buyer  $buyer
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Buyer $buyer)
-    {
-        //
-    }
 }

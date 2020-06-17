@@ -41,11 +41,11 @@ class BuyerTransformer extends TransformerAbstract
           'links' => [
             'buyer.basketitems' => [
               'href' => route('buyers.basketitems.index', $buyer->id)
+            ],
+            'buyer.transactions' => [
+              'href' => route('buyers.transactions.index', $buyer->id)
             ]
           ],
-          'buyer.transactions' => [
-            'href' => route('buyers.transactions.index', $buyer->id)
-          ]
       ];
     }
 

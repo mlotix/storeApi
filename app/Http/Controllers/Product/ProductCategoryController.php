@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class ProductCategoryController extends ApiController
 {
+  public function __construct()
+  {
+    $this->middleware('auth:api')->except('index');
+    $this->middleware('scope:manage-products')->except('index');
+    $this->middleware('can:update,product')->only('update');
+    $this->middleware('can:delete,product')->only('destroy');
+
+  }
     /**
      * Display a listing of the resource.
      *

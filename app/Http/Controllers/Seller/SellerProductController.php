@@ -10,6 +10,14 @@ use Illuminate\Http\Request;
 
 class SellerProductController extends ApiController
 {
+  public function __construct()
+  {
+    $this->middleware('auth:api')->except(['index', 'show']);
+    $this->middleware('scope:manage-products')->only(['store', 'update', 'destroy']);
+    $this->middleware('can:update,seller,product')->only('update');
+    $this->middleware('can:delete,seller,product')->only('destroy');
+
+  }
     /**
      * Display a listing of the resource.
      *

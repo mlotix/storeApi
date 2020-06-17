@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class ProductController extends ApiController
 {
+  public function __construct()
+  {
+  }
     /**
      * Display a listing of the resource.
      *

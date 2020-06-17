@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class ProductTransactionController extends ApiController
 {
+  public function __construct()
+  {
+    Parent::__construct();
+    $this->middleware('scope:read-stats')->only('index');
+    $this->middleware('can:view,product')->only('index');
+
+  }
     /**
      * Display a listing of the resource.
      *

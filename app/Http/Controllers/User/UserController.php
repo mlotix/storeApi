@@ -9,16 +9,29 @@ use App\Mail\UserCreated;
 use App\Mail\UserEmailUpdated;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends ApiController
 {
+  public function __construct()
+  {
+    $this->middleware('auth:api')->only(['update', 'destroy', 'resend_update', 'logout']);
+    $this->middleware('scope:manage-account')->only(['resend_update', 'update', 'destroy']);
+    $this->middleware('scope:read-stats')->only('show');
+    $this->middleware('can:view,user')->only('show');
+    $this->middleware('can:update,user')->only('update');
+    $this->middleware('can:delete,user')->only('destroy');
+    $this->middleware('can:resend,user')->only('resend_update');
+  }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index() //admin only
     {
+      Gate::authorize('make-admin-action');
         $users = User::all();
         return $this->showAll($users);
     }
@@ -156,5 +169,35 @@ class UserController extends ApiController
        }, 250);
 
        return $this->showMsg('The email has been resend. Check your inbox');
+     }
+
+     public function login(Request $request)
+     {
+       $rules = [
+         'email' => 'email|required',
+         'password' => 'min:6|max:32|required',
+       ];
+
+       $login = $request->validate($rules);
+
+       if(! Auth::attempt($login)) {
+         return $this->errorResponse('Invalid login credentials', 422);
+       }
+
+       $token = Auth::user()->createToken('authToken');
+
+       $user = Auth::user();
+       $user['token'] = $token->accessToken;
+       $user['token_expires_at'] = $token->token->expires_at;
+
+       return $this->successResponse(['data' => $user], 200);
+     }
+
+     public function logout()
+     {
+       if(Auth::User()->token()) {
+         Auth::User()->token()->revoke();
+       }
+       return $this->successResponse(['data' => 'User has been logged out', 'code' => 200], 200);
      }
 }

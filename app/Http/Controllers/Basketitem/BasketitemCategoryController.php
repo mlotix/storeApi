@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class BasketitemCategoryController extends ApiController
 {
+  public function __construct()
+  {
+    Parent::__construct();
+    $this->middleware('can:view,basketitem')->only('index');
+  }
     /**
      * Display a listing of the resource.
      *

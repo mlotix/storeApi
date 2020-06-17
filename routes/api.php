@@ -66,3 +66,10 @@ Route::get('/verify/{token}', 'User\UserController@verify')->name('verify');
 //resend Verify
 Route::get('/verify/new/{email}', 'User\UserController@resend_verify')->name('resend_verify');
 Route::get('/verify/update/{email}', 'User\UserController@resend_update')->name('resend_update');
+
+//oauth2 token
+Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
+
+//login and logout
+Route::post('login', 'User\UserController@login')->name('login');
+Route::get('logout', 'User\UserController@logout')->name('logout');

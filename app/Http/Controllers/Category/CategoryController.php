@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Category;
 
 class CategoryController extends ApiController
 {
+    public function __construct()
+    {
+      $this->middleware('auth:api')->except(['index', 'show']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,8 +30,10 @@ class CategoryController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request)   //admin only method
     {
+      Gate::authorize('make-admin-action');
+
       $rules = [
         'name' => 'required|min:3|max:32',
         'description' => 'min:3',
@@ -58,8 +65,10 @@ class CategoryController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category) //admin only method
     {
+      Gate::authorize('make-admin-action');
+
       $rules = [
         'name' => 'min:3|max:32',
         'description' => 'min:3',
@@ -88,8 +97,10 @@ class CategoryController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category) //admin only method
     {
+      Gate::authorize('make-admin-action');
+
         $category->delete();
 
         return $this->showOne($category);

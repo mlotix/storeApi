@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 
 class BuyerBasketitemController extends ApiController
 {
+  public function __construct()
+  {
+    Parent::__construct();
+    $this->middleware('scope:purchase-product')->only(['store', 'update', 'destroy']);
+    $this->middleware('can:view,buyer')->only(['show', 'index']);
+    $this->middleware('can:addToBasket,buyer')->except(['show', 'index']);
+  }
     /**
      * Display a listing of the resource.
      *
