@@ -47,6 +47,9 @@ class TransactionTransformer extends TransformerAbstract
             'transaction.sellers' => [
               'href' => route('transactions.seller.index', $transaction->id)
             ],
+            'transaction.brand' => [
+              'href' => route('transactions.brand.index', $transaction->id)
+            ],
           ],
       ];
     }

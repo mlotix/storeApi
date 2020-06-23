@@ -4,6 +4,7 @@
 
 use App\Product;
 use App\User;
+use App\Brand;
 use Faker\Generator as Faker;
 
 $factory->define(Product::class, function (Faker $faker) {
@@ -14,6 +15,7 @@ $factory->define(Product::class, function (Faker $faker) {
         'quantity' => $quantity = $faker->numberBetween(0,20),
         'status' => $quantity == 0 ? Product::UNAVAILABLE_PRODUCT : Product::AVAILABLE_PRODUCT,
         'image' => $faker->randomElement(['1.png', '2.png', '3.png']),
+        'brand_id' => Brand::all()->random()->id,
         'seller_id' => User::all()->random()->id,
 
     ];

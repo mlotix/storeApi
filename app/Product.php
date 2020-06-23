@@ -7,6 +7,7 @@ use App\Category;
 use App\Seller;
 use App\Transaction;
 use App\Basketitem;
+use App\Brand;
 use App\Transformers\ProductTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,6 +27,7 @@ class Product extends Model
       'quantity',
       'status',
       'image',
+      'brand_id',
       'seller_id',
     ];
 
@@ -44,5 +46,8 @@ class Product extends Model
     }
     public function basketitems() {
       return $this->hasMany(Basketitem::class);
+    }
+    public function brand() {
+      return $this->belongsTo(Brand::class);
     }
 }

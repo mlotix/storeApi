@@ -42,7 +42,10 @@ class BasketitemTransformer extends TransformerAbstract
           'links' => [
             'basketitem.categories' => [
               'href' => route('basketitems.categories.index', $basketitem->id)
-            ]
+            ],
+            'basketitem.brands' => [
+              'href' => route('basketitems.brands.index', $basketitem->id)
+            ],
           ]
       ];
     }

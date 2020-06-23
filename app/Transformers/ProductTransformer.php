@@ -40,6 +40,7 @@ class ProductTransformer extends TransformerAbstract
             'quantity' => (int)$product->quantity,
             'status' => (string)$product->status,
             'image' => url("img/{$product->image}"),
+            'brand' => $product->brand()->get(array('id', 'name')),
             'seller' => $product->seller()->get(array('id', 'name')),
             'creationDate' => (string)$product->created_at,
 
@@ -69,6 +70,7 @@ class ProductTransformer extends TransformerAbstract
         'quantity' => 'quantity',
         'status' => 'status',
         'seller' => 'seller_id',
+        'brand' => 'brand_id',
         'creationDate' => 'created_at',
       ];
 

@@ -21,6 +21,7 @@ class CreateProductsTable extends Migration
             $table->unsignedInteger('quantity');
             $table->string('status')->default(Product::UNAVAILABLE_PRODUCT);
             $table->string('image');
+            $table->foreignId('brand_id')->constrained;
             $table->foreignId('seller_id')->constrained('users'); //dodac on delete
             $table->timestamps();
             $table->softDeletes();

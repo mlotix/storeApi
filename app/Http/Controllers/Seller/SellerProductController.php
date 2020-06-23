@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\ApiController;
+use App\Brand;
 use App\Seller;
 use App\Product;
 use Illuminate\Support\Facades\DB;
@@ -46,8 +47,13 @@ class SellerProductController extends ApiController
         'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'categories' => 'required|array',
         'categories.*' => 'integer|gt:0',
+        'brand_id' => 'integer|gt:0',
       ];
       $data = $request->validate($rules);
+
+      if(!Brand::firstOrFail($data['brand_id'])) {
+        return $this->errorResponse('Brand does not exist', 422)
+      }
 
       $product = [
         'name' => $data['name'],
@@ -56,6 +62,7 @@ class SellerProductController extends ApiController
         'quantity' => $data['quantity'],
         'status' => $data['quantity'] == 0 ? Product::UNAVAILABLE_PRODUCT : Product::AVAILABLE_PRODUCT,
         'image' => $data['image']->store(''),
+        'brand_id' => $data['brand_id'],
         'seller_id' => $seller->id,
       ];
 
@@ -97,6 +104,7 @@ class SellerProductController extends ApiController
         'image' => 'image|mimes:jpg,jpeg,png|max:2048',
         'categories' => 'array',
         'categories.*' => 'integer|gt:0',
+        'brand_id' => 'integer|gt:0',
       ];
       $data = $request->validate($rules);
 
@@ -118,6 +126,11 @@ class SellerProductController extends ApiController
       }
       if($request->filled('categories')) {
         $product->categories()->sync($request->categories);
+      }
+      if($request->filled('brand_id')) {
+        if(Brand::firstOrFail($request->brand_id)) {
+          $product->brand_id = $request->brand_id;
+        }
       }
 
       if($product->isClean() && !$request->categories) {

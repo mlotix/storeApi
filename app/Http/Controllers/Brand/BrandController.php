@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers\Brand;
 
+use App\Brand;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use App\Category;
+use Illuminate\Auth\Access\Gate;
 
-class CategoryController extends ApiController
+class BrandController extends ApiController
 {
+
     public function __construct()
     {
       $this->middleware('auth:api')->except(['index', 'show']);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +22,8 @@ class CategoryController extends ApiController
      */
     public function index()
     {
-      $categories = Category::all();
-      return $this->showAll($categories);
+        $brands = Brand::all();
+      return $this->showAll($brands);
     }
 
     /**
@@ -30,79 +32,82 @@ class CategoryController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)   //admin only method
+    public function store(Request $request)
     {
-      Gate::authorize('make-admin-action');
+        Gate::authorize('make-admin-action');
 
-      $rules = [
-        'name' => 'required|min:3|max:64',
-        'description' => 'min:3',
-      ];
+        $rules = [
+          'name' => 'required|min:3|max:64',
+          'description' => 'min:3',
+        ];
 
-      $data = $request->validate($rules);
-      $category = ['name' => $data['name'], 'description' => $data['description']];
+        $request->validate($rules);
 
-      $category = Category::create($category);
+        $data['name'] = $request->name;
+        $data['description'] = $request->description;
 
-      return $this->showOne($category, 201);
+        $brand = Brand::create($data);
+
+        return $this->showOne($brand);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Brand $brand)
     {
-        return $this->showOne($category);
+        return $this->showOne($brand);
     }
+
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category) //admin only method
+    public function update(Request $request, Brand $brand)
     {
       Gate::authorize('make-admin-action');
 
       $rules = [
-        'name' => 'min:3|max:32',
+        'name' => 'min:3|max:64',
         'description' => 'min:3',
       ];
 
       $request->validate($rules);
 
       if($request->filled('name')) {
-        $category->name = $request->name;
+        $brand->name = $request->name;
       }
       if($request->filled('description')) {
-        $category->description = $request->description;
+        $brand->description = $request->description;
       }
-      if($category->isClean()) {
+      if($brand->isClean()) {
         return $this->errorResponse('Nothing has changed', 422);
       }
 
-      $category->save();
+      $brand->save();
 
-      return $this->showOne($category);
+      return $this->showOne($brand);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category) //admin only method
+    public function destroy(Brand $brand)
     {
       Gate::authorize('make-admin-action');
 
-        $category->delete();
+        $brand->delete();
 
-        return $this->showOne($category);
+        return $this->showOne($brand);
     }
 }
