@@ -12,6 +12,16 @@ class CategorySeeder extends Seeder
     public function run()
     {
         Category::flushEventListeners();
-        factory(Category::class, 20)->create();
+        $json = File::get("database/custom_data/categories.json");
+        $data = json_decode($json);
+
+        foreach ($data as $obj) {
+          Category::create(array(
+            'id' => $obj->id,
+            'name' => $obj->name,
+            'description' => $obj->description,
+            'parent_id' => $obj->parent_id,
+          ));
+        }
     }
 }

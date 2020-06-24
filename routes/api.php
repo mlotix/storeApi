@@ -28,9 +28,20 @@ Route::resource('categories', 'Category\CategoryController', ['except' => ['crea
 Route::resource('categories.products', 'Category\CategoryProductController', ['only' => ['index']]);
 //categories brands
 Route::resource('categories.brands', 'Category\CategoryBrandController', ['only' => ['index']]);
+//categories childs
+Route::get('/categories/{category}/childs', 'Category\CategoryController@childs')->name('category_childs');
 
 //Brands
 Route::resource('brands', 'Brand\BrandController', ['except' => ['create', 'edit']]);
+//brands categories
+Route::resource('brands.categories', 'Brand\BrandCategoryController', ['only' => ['index']]);
+//brands products
+Route::resource('brands.products', 'Brand\BrandProductController', ['only' => ['index', 'show']]);
+//brands sellers
+Route::resource('brands.sellers', 'Brand\BrandSellerController', ['only' => ['index']]);
+//brands transactions
+Route::resource('brands.transactions', 'Brand\BrandTransactionController', ['only' => ['index']]);
+
 
 //Products
 Route::resource('products', 'Product\ProductController', ['only' => ['index', 'show']]);
@@ -42,6 +53,8 @@ Route::resource('products.buyers', 'Product\ProductBuyerController', ['only' => 
 Route::resource('products.categories', 'Product\ProductCategoryController', ['except' => ['edit', 'create', 'store']]);
 //Products Basket
 Route::resource('products.basketitems', 'Product\ProductBasketitemController', ['only' => ['index']]);
+//products brand
+Route::resource('products.brand', 'Product\ProductBrandController', ['only' => ['index']]);
 
 //Basket
 Route::resource('basketitems', 'Basketitem\BasketitemController', ['only' => ['index', 'show']]);

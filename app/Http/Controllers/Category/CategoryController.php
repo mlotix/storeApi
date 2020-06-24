@@ -11,7 +11,7 @@ class CategoryController extends ApiController
 {
     public function __construct()
     {
-      $this->middleware('auth:api')->except(['index', 'show']);
+      $this->middleware('auth:api')->except(['index', 'show', 'childs']);
     }
     /**
      * Display a listing of the resource.
@@ -104,5 +104,20 @@ class CategoryController extends ApiController
         $category->delete();
 
         return $this->showOne($category);
+    }
+
+    /**
+     *   Display a listing of childs of the resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function childs(Category $category)
+    {
+
+
+        $categories = $category->childs;
+
+        return $this->showAll($categories);
     }
 }

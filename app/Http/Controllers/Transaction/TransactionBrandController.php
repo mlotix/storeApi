@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Transaction;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Transaction;
 use Illuminate\Http\Request;
 
-class TransactionBrandController extends Controller
+class TransactionBrandController extends ApiController
 {
     public function __construct()
     {

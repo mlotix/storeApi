@@ -36,6 +36,7 @@ class CategoryTransformer extends TransformerAbstract
           'id' => (int)$category->id,
           'name' => (string)$category->name,
           'desc' => (string)$category->description,
+          'parent' => (string)$category->parent_id,
           'creationDate' => (string)$category->created_at,
 
           'links' => [
@@ -55,6 +56,7 @@ class CategoryTransformer extends TransformerAbstract
         'name' => 'name',
         'desc' => 'description',
         'creationDate' => 'created_at',
+        'parent' => 'parent_id',
       ];
 
       return isset($attributes[$index]) ? $attributes[$index] : null;

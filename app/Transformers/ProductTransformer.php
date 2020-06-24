@@ -57,6 +57,9 @@ class ProductTransformer extends TransformerAbstract
               'product.transactions' => [
                 'href' => route('products.transactions.index', $product->id)
               ],
+              'product.brand' => [
+                'href' => route('products.brand.index', $product->id)
+              ],
             ],
         ];
     }

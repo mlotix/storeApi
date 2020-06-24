@@ -38,6 +38,18 @@ class BrandTransformer extends TransformerAbstract
            'creationDate' => (string)$brand->created_at,
 
            'links' => [
+             'brand.categories' => [
+               'href' => route('brands.categories.index', $brand->id)
+             ],
+             'brand.products' => [
+               'href' => route('brands.products.index', $brand->id)
+             ],
+             'brand.sellers' => [
+               'href' => route('brands.sellers.index', $brand->id)
+             ],
+             'brand.transactions' => [
+               'href' => route('brands.transactions.index', $brand->id)
+             ],
            ],
        ];
      }

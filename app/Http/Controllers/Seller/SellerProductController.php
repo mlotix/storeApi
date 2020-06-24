@@ -52,7 +52,7 @@ class SellerProductController extends ApiController
       $data = $request->validate($rules);
 
       if(!Brand::firstOrFail($data['brand_id'])) {
-        return $this->errorResponse('Brand does not exist', 422)
+        return $this->errorResponse('Brand does not exist', 422);
       }
 
       $product = [

@@ -14,6 +14,7 @@ class Category extends Model
     protected $fillable = [
       'name',
       'description',
+      'parent_id',
     ];
     protected $hidden = [
       'pivot',
@@ -23,5 +24,8 @@ class Category extends Model
 
     public function products() {
       return $this->belongsToMany(Product::class);
+    }
+    public function childs() {
+      return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 }
