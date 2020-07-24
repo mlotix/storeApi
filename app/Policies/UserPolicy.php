@@ -8,8 +8,8 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
-    use HandlesAuthorization;
     use AdminPolicyTrait;
+    use HandlesAuthorization;
 
 
     /**
@@ -21,7 +21,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return $user->id === $model->id;
+        return true;
     }
 
     /**

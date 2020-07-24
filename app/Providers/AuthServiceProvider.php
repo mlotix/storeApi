@@ -7,6 +7,21 @@ use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
 use Carbon\Carbon;
 
+use App\Buyer;
+use App\Policies\BuyerPolicy;
+use App\Basketitem;
+use App\Policies\BasketitemPolicy;
+use App\Category;
+use App\Policies\CategoryPolicy;
+use App\Product;
+use App\Policies\ProductPolicy;
+use App\Seller;
+use App\Policies\SellerPolicy;
+use App\Transaction;
+use App\Policies\TransactionPolicy;
+use App\User;
+use App\Policies\UserPolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -15,13 +30,13 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        App\Buyer::class => App\Policies\BuyerPolicy::class,
-        App\Basketitem::class => App\Policies\BasketitemPolicy::class,
-        App\Category::class => App\Policies\CategoryPolicy::class,
-        App\Product::class => App\Policies\ProductPolicy::class,
-        App\Seller::class => App\Policies\SellerPolicy::class,
-        App\Transaction::class => App\Policies\TransactionPolicy::class,
-        App\User::class => App\Policies\UserPolicy::class,
+        Buyer::class => BuyerPolicy::class,
+        Basketitem::class => BasketitemPolicy::class,
+        Category::class => CategoryPolicy::class,
+        Product::class => ProductPolicy::class,
+        Seller::class => SellerPolicy::class,
+        Transaction::class => TransactionPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**
@@ -50,12 +65,5 @@ class AuthServiceProvider extends ServiceProvider
         Passport::personalAccessClientSecret(
           config('passport.personal_access_client.secret')
         );
-
-        Passport::tokensCan([
-          'purchase-product' => 'Add item to basket and make a transaction',
-          'manage-products' => 'CRUD products',
-          'manage-account' => 'Read, modify account data. Delete the account',
-          'read-stats' => 'Read statistics about the user account',
-        ]);
     }
 }

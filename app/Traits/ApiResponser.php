@@ -84,7 +84,7 @@ trait ApiResponser
   protected function paginateResponse(Collection $collection) {
 
     $rules = [
-      'per_page' => 'integer|gte:10|lte:100',
+      'per_page' => 'integer|gte:4|lte:100',
     ];
     Validator::validate(request()->all(), $rules);
 

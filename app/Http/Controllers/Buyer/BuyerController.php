@@ -23,7 +23,7 @@ class BuyerController extends ApiController
      */
     public function index() //admin only method
     {
-      Gate::authorize('make-admin-action');
+      //Gate::authorize('make-admin-action');
 
       $buyers = Buyer::has('transactions')->get();
       return $this->showAll($buyers);
@@ -35,9 +35,9 @@ class BuyerController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Buyer $buyer)
     {
-      $buyer = Buyer::has('transactions')->findOrFail($id);
+      $buyer = Buyer::has('transactions')->findOrFail($buyer->id);
       return $this->showOne($buyer);
     }
 

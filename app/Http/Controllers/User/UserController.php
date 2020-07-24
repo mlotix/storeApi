@@ -16,13 +16,12 @@ class UserController extends ApiController
 {
   public function __construct()
   {
-    $this->middleware('auth:api')->only(['update', 'destroy', 'resend_update', 'logout']);
-    $this->middleware('scope:manage-account')->only(['resend_update', 'update', 'destroy']);
-    $this->middleware('scope:read-stats')->only('show');
-    $this->middleware('can:view,user')->only('show');
-    $this->middleware('can:update,user')->only('update');
-    $this->middleware('can:delete,user')->only('destroy');
-    $this->middleware('can:resend,user')->only('resend_update');
+    //$this->middleware('auth:api')->only(['update', 'destroy', 'resend_update', 'logout']);
+    //$this->middleware('scope:manage-account')->only(['resend_update', 'update', 'destroy']);
+    ////$this->middleware('can:view,user')->only('show');
+    //$this->middleware('can:update,user')->only('update');
+    //$this->middleware('can:delete,user')->only('destroy');
+    //$this->middleware('can:resend,user')->only('resend_update');
   }
     /**
      * Display a listing of the resource.
@@ -66,10 +65,9 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-
+      $this->authorize('view', $user);
         return $this->showOne($user);
     }
 

@@ -12,6 +12,6 @@ class TransactionSeeder extends Seeder
     public function run()
     {
         Transaction::flushEventListeners();
-        factory(Transaction::class, 100)->create();
+        factory(Transaction::class, 300)->create();
     }
 }
