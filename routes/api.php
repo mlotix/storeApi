@@ -81,6 +81,7 @@ Route::resource('transactions.brand', 'Transaction\TransactionBrandController', 
 
 //Users
 Route::resource('users', 'User\UserController', ['except' => ['create', 'edit']]);
+Route::get('user', 'User\UserController@single')->name('singleUser');
 
 //verify users
 Route::get('/verify/{token}', 'User\UserController@verify')->name('verify');
@@ -90,8 +91,9 @@ Route::get('/verify/new/{email}', 'User\UserController@resend_verify')->name('re
 Route::get('/verify/update/{email}', 'User\UserController@resend_update')->name('resend_update');
 
 //oauth2 token
-Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
+Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->middleware('cors');
 
 //login and logout
 Route::post('login', 'User\UserController@login')->name('login');
+Route::post('refresh', 'User\UserController@refresh')->name('refresh_token');
 Route::get('logout', 'User\UserController@logout')->name('logout');

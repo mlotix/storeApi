@@ -21,6 +21,7 @@ use App\Transaction;
 use App\Policies\TransactionPolicy;
 use App\User;
 use App\Policies\UserPolicy;
+use App\Http\Middleware\Cors;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -54,16 +55,19 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         //passport
-        Passport::tokensExpireIn(Carbon::now()->addMinutes(30));
-        Passport::refreshTokensExpireIn(Carbon::now()->addMinutes(120));
+        Passport::tokensExpireIn(Carbon::now()->addMinutes(60));
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(1));
         Passport::personalAccessTokensExpireIn(Carbon::now()->addDays(2));
 
-        Passport::personalAccessClientId(
-          config('passport.personal_access_client.id')
-        );
+        Passport::routes(function ($router) {
+          $router->forAccessTokens();
+        }, ['middleware' => [ Cors::class ]]);
 
-        Passport::personalAccessClientSecret(
-          config('passport.personal_access_client.secret')
-        );
+        Passport::tokensCan([
+          'purchase-product' => 'Add item to basket and make a transaction',
+          'manage-products' => 'CRUD products',
+          'manage-account' => 'Read, modify account data. Delete the account',
+          'read-stats' => 'Read statistics about the user account',
+        ]);
     }
 }

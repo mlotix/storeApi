@@ -11,17 +11,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends ApiController
 {
   public function __construct()
   {
-    //$this->middleware('auth:api')->only(['update', 'destroy', 'resend_update', 'logout']);
-    //$this->middleware('scope:manage-account')->only(['resend_update', 'update', 'destroy']);
-    ////$this->middleware('can:view,user')->only('show');
-    //$this->middleware('can:update,user')->only('update');
-    //$this->middleware('can:delete,user')->only('destroy');
-    //$this->middleware('can:resend,user')->only('resend_update');
+    $this->middleware('auth:api')->only(['update', 'destroy', 'resend_update', 'logout', 'single', 'show']);
+    $this->middleware('scope:manage-account')->only(['resend_update', 'update', 'destroy']);
+    $this->middleware('can:view,user')->only('show');
+    $this->middleware('can:update,user')->only('update');
+    $this->middleware('can:delete,user')->only('destroy');
+    $this->middleware('can:resend,user')->only('resend_update');
   }
     /**
      * Display a listing of the resource.
@@ -67,8 +68,13 @@ class UserController extends ApiController
      */
     public function show(User $user)
     {
-      $this->authorize('view', $user);
+      //$this->authorize('view', $user);
         return $this->showOne($user);
+    }
+
+    public function single(Request $request)
+    {
+      return $this->showOne($request->user());
     }
 
     /**
@@ -171,24 +177,51 @@ class UserController extends ApiController
 
      public function login(Request $request)
      {
-       $rules = [
-         'email' => 'email|required',
-         'password' => 'min:6|max:32|required',
-       ];
 
-       $login = $request->validate($rules);
+       try {
+         $response = Http::asForm()->post('http://storeapi.test/oauth/token/', [
+           'username' => $request->username,
+           'password' => $request->password,
+           'grant_type' => 'password',
+           'client_id' => '2',
+           'client_secret' => 'ii7iAuj3qb5lBtfKSmYqfHImvaPMXASpmXwGKkAr',
+           'scope' => 'manage-account read-stats purchase-product manage-products',
+         ]);
 
-       if(! Auth::attempt($login)) {
-         return $this->errorResponse('Invalid login credentials', 422);
+         if($response->ok()) {
+           return $response->json();
+         }
+         if($response->status() == 400) {
+           return $this->errorResponse('Invalid credentials', 422);
+         }
+       } catch (\Exception $e) {
+         return $this->errorResponse('Internal server error', 500);
        }
+     }
 
-       $token = Auth::user()->createToken('authToken');
+     public function refresh(Request $request)
+     {
+       try {
+         $response = Http::asForm()->post('http://storeapi.test/oauth/token/', [
+           'refresh_token' => $request->refresh_token,
+           'grant_type' => 'refresh_token',
+           'client_id' => '2',
+           'client_secret' => 'ii7iAuj3qb5lBtfKSmYqfHImvaPMXASpmXwGKkAr',
+           'scope' => 'manage-account read-stats purchase-product manage-products',
+         ]);
 
-       $user = Auth::user();
-       $user['token'] = $token->accessToken;
-       $user['token_expires_at'] = $token->token->expires_at;
-
-       return $this->successResponse(['data' => $user], 200);
+         if($response->ok()) {
+           return $response->json();
+         }
+         if($response->status() == 400) {
+           return $this->errorResponse('Invalid credentials', 422);
+         }
+         if($response->status() == 401 || $response->status() == 403) {
+           return $this->errorResponse('unauthenticated', 401);
+         }
+       } catch (\Exception $e) {
+         return $this->errorResponse('Internal server error', 500);
+       }
      }
 
      public function logout()
